@@ -120,4 +120,12 @@ explore: redshift_query_execution {
 
 explore: locks {
   hidden: yes
-  }
+}
+
+explore: vacuum_history {
+  hidden: yes
+}
+
+explore: vacuum_progress {
+  hidden: yes
+}

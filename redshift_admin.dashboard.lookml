@@ -1,3 +1,5 @@
+# https://nearmap.looker.com/dashboards/redshift_model::redshift_admin
+
 - dashboard: redshift_admin
   title: 'Redshift Admin'
   layout: tile
@@ -77,3 +79,40 @@
     width: 12
     height: 4
     limit: 500
+
+  - name: vacuum_history
+    title: 'Vacuum History'
+    type: table
+    model: redshift_model
+    explore: vacuum_history
+    dimensions: [vacuum_history.xid,
+                vacuum_history.userid,
+                vacuum_history.table_name,
+                vacuum_history.status,
+                vacuum_history.rows,
+                vacuum_history.sortedrows,
+                vacuum_history.blocks,
+                vacuum_history.max_merge_partitions,
+                vacuum_history.eventtime_date,
+                vacuum_history.eventtime_time_of_day]
+    measures: []
+    sorts: [vacuum_history.eventtime desc]
+    show_view_names: false
+    show_row_numbers: true
+    width: 12
+    height: 4
+    limit: 500
+
+  - name: vacuum_progress
+    title: 'Vacuum Progress'
+    type: table
+    model: redshift_model
+    explore: vacuum_progress
+    dimensions: [vacuum_progress.table_name, vacuum_progress.status, vacuum_progress.time_remaining_estimate]
+    measures: []
+    sorts: []
+    show_view_names: false
+    show_row_numbers: true
+    width: 12
+    height: 4
+    limit: 200
