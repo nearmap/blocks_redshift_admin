@@ -1024,3 +1024,81 @@ view: locks {
     sql: ${TABLE}.is_pg_backend ;;
   }
 }
+
+view: vacuum_history {
+  derived_table: {
+    sql:
+      select
+      "xid",
+      userid,
+      table_name,
+      status,
+      "rows",
+      sortedrows,
+      blocks,
+      a.max_merge_partitions,
+      eventtime
+      from stl_vacuum a
+      left join svv_vacuum_summary using (xid)
+      where status not like '%Skip%'
+      order by eventtime desc;;
+  }
+  dimension: xid {
+    label: "Transaction ID"
+    type: string
+    sql: ${TABLE}.xid ;;
+  }
+  dimension: userid {
+    type: string
+    sql: ${TABLE}.userid ;;
+  }
+  dimension: table_name {
+    type: string
+    sql: ${TABLE}.table_name ;;
+  }
+  dimension: status {
+    label: "Vacuum Status"
+    type: string
+    sql: ${TABLE}.status ;;
+  }
+  dimension: rows {
+    type: number
+    sql: ${TABLE}.rows ;;
+  }
+  dimension: sortedrows {
+    label: "Sorted Rows"
+    type: number
+    sql: ${TABLE}.sortedrows ;;
+  }
+  dimension: blocks {
+    type: number
+    sql: ${TABLE}.blocks ;;
+  }
+  dimension: max_merge_partitions {
+    type: number
+    sql: ${TABLE}.max_merge_partitions ;;
+  }
+  dimension_group: eventtime {
+    type: time
+    timeframes: [date, week, month, time_of_day]
+    sql: ${TABLE}.eventtime ;;
+  }
+}
+
+view: vacuum_progress {
+  derived_table: {
+    sql: select * from SVV_VACUUM_PROGRESS ;;
+  }
+  dimension: table_name {
+    type: string
+    sql: ${TABLE}.table_name ;;
+  }
+  dimension: status {
+    type: string
+    sql: ${TABLE}.status ;;
+  }
+  dimension: time_remaining_estimate {
+    type: number
+    sql: ${TABLE}.time_remaining_estimate ;;
+  }
+}
