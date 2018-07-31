@@ -129,3 +129,7 @@ explore: vacuum_history {
 explore: vacuum_progress {
   hidden: yes
 }
+
+explore: running_queries {
+  hidden:  yes
+}

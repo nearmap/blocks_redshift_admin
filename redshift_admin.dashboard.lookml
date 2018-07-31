@@ -2,10 +2,45 @@
 
 - dashboard: redshift_admin
   title: 'Redshift Admin'
-  layout: tile
-  tile_size: 100
+  layout: grid
+  rows:
+    - elements: [running_queries, locks]
+      height: 300
+    - elements: [table_load_summary, database_consumption]
+      height: 300
+    - elements: [recent_files_loaded, recent_load_errors]
+      height: 300
+    - elements: [vacuum_history, vacuum_progress]
+      height: 300
 
   elements:
+
+  - name: running_queries
+    title: 'Running Queries'
+    type: table
+    model: redshift_model
+    explore: running_queries
+    dimensions: [running_queries.process_id, running_queries.database_name, running_queries.user, running_queries.query_group, running_queries.start_time, running_queries.time_executing, running_queries.sql]
+    measures: []
+    sorts: [running_queries.time_executing desc]
+    show_view_names: false
+    show_row_numbers: true
+    width: 12
+    limit: 200
+
+  - name: locks
+    title: 'Table Locks'
+    type: table
+    model: redshift_model
+    explore: locks
+    dimensions: [locks.relname, locks.usename, locks.mode, locks.granted, locks.is_pg_backend]
+    measures: []
+    sorts: []
+    show_view_names: true
+    show_row_numbers: true
+    width: 12
+    height: 4
+    limit: 500
 
   - name: table_load_summary
     title: 'Table Load Summary'
@@ -60,20 +95,6 @@
     dimensions: [redshift_db_space.schema, redshift_db_space.table_stem]
     measures: [redshift_db_space.total_rows, redshift_db_space.total_megabytes, redshift_db_space.total_tables]
     sorts: [redshift_db_space.total_megabytes desc]
-    show_view_names: true
-    show_row_numbers: true
-    width: 12
-    height: 4
-    limit: 500
-
-  - name: locks
-    title: 'Table Locks'
-    type: table
-    model: redshift_model
-    explore: locks
-    dimensions: [locks.relname, locks.usename, locks.mode, locks.granted, locks.is_pg_backend]
-    measures: []
-    sorts: []
     show_view_names: true
     show_row_numbers: true
     width: 12
