@@ -1102,3 +1102,54 @@ view: vacuum_progress {
     sql: ${TABLE}.time_remaining_estimate ;;
   }
 }
+
+view: running_queries {
+  derived_table: {
+    sql: select
+      r.pid,
+      trim(db_name) AS db_name,
+      trim(user_name) AS "user",
+      trim(label) AS query_group,
+      r.starttime AS start_time,
+      r.duration,
+      r.query AS sql
+    FROM stv_recents r LEFT JOIN stv_inflight i ON r.pid = i.pid
+    where status = 'Running' ;;
+  }
+
+  dimension: process_id {
+    type: number
+    sql: ${TABLE}.pid ;;
+  }
+
+  dimension: database_name {
+    type: string
+    sql: ${TABLE}.db_name ;;
+  }
+
+  dimension: user {
+    type: string
+    sql: ${TABLE}.user ;;
+  }
+
+  dimension: query_group {
+    type: string
+    sql: ${TABLE}.query_group ;;
+  }
+
+  dimension: start_time {
+    type: date_time
+    sql: ${TABLE}.start_time ;;
+  }
+
+  dimension: time_executing {
+    type: number
+    description: "Amount of time that a query was executing, in seconds"
+    sql: ${TABLE}.duration /1000000;;
+  }
+
+  dimension: sql {
+    type: string
+    sql: ${TABLE}.sql ;;
+  }
+}
